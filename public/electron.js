@@ -1,10 +1,10 @@
-import {app, BrowserWindow} from 'electron';
-import * as path from 'path';
-import * as url from 'url';
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 
-let mainWindow: Electron.BrowserWindow | null;
+let mainWindow;
 
 function createWindow()
 {
@@ -12,6 +12,9 @@ function createWindow()
     mainWindow = new BrowserWindow({
         height: 720,
         width: 1280,
+        webPreferences: {
+            nodeIntegration: true,
+        },
     });
 
     // and load the index.html of the app.
