@@ -1,4 +1,7 @@
-const {app, BrowserWindow} = require('electron');
+const {
+    app,
+    BrowserWindow,
+} = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -6,7 +9,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 
 let mainWindow;
 
-function createWindow()
+async function createWindow()
 {
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -19,12 +22,8 @@ function createWindow()
 
     // and load the index.html of the app.
     const staticIndexPath = path.join(__dirname, '../build/index.html');
-    const main = IS_DEV ? `http://localhost:3000` : url.format({
-        pathname: staticIndexPath,
-        protocol: 'file:',
-        slashes: true,
-    });
-    mainWindow.loadURL(main);
+    const main = IS_DEV ? `http://localhost:3000` : url.pathToFileURL(staticIndexPath).href;
+    await mainWindow.loadURL(main);
 
     // Emitted when the window is closed.
     mainWindow.on('closed', () =>
@@ -52,13 +51,13 @@ app.on('window-all-closed', () =>
     }
 });
 
-app.on('activate', () =>
+app.on('activate', async () =>
 {
     // On OS X it"s common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null)
     {
-        createWindow();
+        await createWindow();
     }
 });
 
